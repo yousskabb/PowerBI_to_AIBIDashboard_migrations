@@ -1,0 +1,123 @@
+table _Measures
+	lineageTag: d3097df2-dde1-4463-905b-f9bd71e6237a
+
+	measure Revenue = SUM ( sales_transactions[Totalprice] )
+		formatString: 0
+		lineageTag: cb5c3b46-cb42-405d-a9de-df2a25d797bc
+
+	measure Units = ```
+			SUM ( sales_transactions[Quantity] )
+			
+			```
+		lineageTag: 77a40238-b887-4b16-8207-97a54b0916e9
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Orders = ```
+			DISTINCTCOUNT ( sales_transactions[TransactionId] )
+			
+			```
+		formatString: 0
+		lineageTag: 737f906a-dc0c-4d5d-a706-2a797d5b39c7
+
+	measure Customers = ```
+			DISTINCTCOUNT ( sales_transactions[Customerid] )
+			
+			```
+		formatString: 0
+		lineageTag: a338dca8-592a-43d5-aa8a-0bd5bc8f19ef
+
+	measure Franchises = ```
+			DISTINCTCOUNT ( sales_transactions[Franchiseid] )
+			
+			```
+		formatString: 0
+		lineageTag: 277368ff-2734-47c0-8f30-9f1cc451cf2f
+
+	measure 'Avg Unit Price' = ```
+			DIVIDE ( [Revenue], [Units] )
+			
+			```
+		lineageTag: 784a5b63-f0f8-4f2f-93f7-698c00b14cab
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Avg Ticket (ATV)' = ```
+			DIVIDE ( [Revenue], [Orders] )
+			
+			```
+		lineageTag: 48a3d71b-56aa-4f67-9a36-17c4d474ebf2
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Avg Items per Order' = DIVIDE ( [Units], [Orders] )
+		lineageTag: 2dd29120-e00a-4d9f-a8b2-f519fe56e13e
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Revenue YTD' = ```
+			
+			CALCULATE ( [Revenue], DATESYTD ( DimDate[Date] ) )
+			
+			```
+		formatString: 0
+		lineageTag: bd20248a-3b41-472f-b78d-c3c604a376e5
+
+	measure 'Transactions Missing Product' = ```
+			
+			    CALCULATE (
+			        COUNTROWS ( sales_transactions ),
+			        KEEPFILTERS ( ISBLANK ( sales_transactions[Product] ) )
+			    )
+			
+			```
+		formatString: 0
+		lineageTag: 6c2f40ca-5b6e-483e-9612-41618169e89d
+
+	measure 'ransactions Missing Price' = ```
+			
+			    CALCULATE (
+			        COUNTROWS ( sales_transactions ),
+			        KEEPFILTERS ( ISBLANK ( sales_transactions[Unitprice] ) )
+			    )
+			
+			```
+		formatString: 0
+		lineageTag: b91d184e-05f7-4f35-a352-d42debc5a749
+
+	measure 'Revenue (All Selected)' = ```
+			
+			    CALCULATE ( [Revenue],
+			        ALLSELECTED ( sales_transactions[Product] ),
+			        ALLSELECTED ( sales_transactions[Paymentmethod] ),
+			        ALLSELECTED ( sales_transactions[Franchiseid] ),
+			        ALLSELECTED ( DimDate[Date] )
+			    )
+			
+			```
+		formatString: 0
+		lineageTag: 2184a929-f6df-4bd5-9621-cdebcd20c62f
+
+	measure 'Revenue MTD' = ```
+			
+			    CALCULATE ( [Revenue], DATESMTD ( DimDate[Date] ) )
+			
+			```
+		formatString: 0
+		lineageTag: 770ab94e-3f98-4805-9f3d-18924e95f4e2
+
+	column Value
+		isHidden
+		lineageTag: b398873d-724e-4d1a-b8b4-d749d6598bf3
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Value]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition _Measures = calculated
+		mode: import
+		source = {"placeholder"}
+
+	annotation PBI_Id = 077eb577027a42d984aafccc49b0038a
+

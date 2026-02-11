@@ -1,0 +1,30 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-CA
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["media_customer_reviews","media_gold_reviews_chunked","sales_customers","sales_franchises","sales_suppliers","sales_transactions","httpPath","hostaname"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table media_customer_reviews
+ref table DateTableTemplate_1051ee3c-3f27-4b53-b2cf-932710a26a9b
+ref table LocalDateTable_169f25b1-a992-476e-9de2-8e72ab458a33
+ref table media_gold_reviews_chunked
+ref table LocalDateTable_e68603d7-582b-4e59-96e9-c05a9ecf3c76
+ref table sales_customers
+ref table sales_franchises
+ref table sales_suppliers
+ref table sales_transactions
+ref table LocalDateTable_15f59164-8889-47c6-8dc6-a656611dc6d2
+ref table LocalDateTable_83b7153b-01e5-4478-942d-274f9d812012
+ref table _Measures
+ref table DimDate
+
+ref cultureInfo en-US
+

@@ -1,0 +1,47 @@
+bundle:
+  name: pbi_dashboard_migration
+
+workspace:
+  host: https://<your-databricks-workspace-url>
+
+include:
+  - jobs/*.yml
+  - warehouses/*.yml
+
+sync:
+  include:
+    - src/views/*.sql
+  exclude:
+    - terraform/**
+    - powerBI_reports/**
+    - "*.md"
+    - .DS_Store
+
+resources:
+  dashboards:
+    bakehousesales_dashboard:
+      display_name: "BakehouseSales"
+      file_path: ./dashboard/src/BakehouseSales.lvdash.json
+      warehouse_id: ${resources.sql_warehouses.dashboard_warehouse.id}
+
+    adventureworks_dashboard:
+      display_name: "AdventureWorks Sales"
+      file_path: ./dashboard/src/AdventureWorks Sales.lvdash.json
+      warehouse_id: ${resources.sql_warehouses.dashboard_warehouse.id}
+
+    sample_superstore_dashboard:
+      display_name: "Sample Superstore"
+      file_path: ./dashboard/src/sample_superstore.lvdash.json
+      warehouse_id: ${resources.sql_warehouses.dashboard_warehouse.id}
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/dev
+
+  prod:
+    mode: production
+    workspace:
+      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/prod

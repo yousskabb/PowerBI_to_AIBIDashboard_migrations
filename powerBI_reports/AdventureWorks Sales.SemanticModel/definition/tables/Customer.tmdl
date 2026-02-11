@@ -1,0 +1,98 @@
+table Customer
+	lineageTag: 6ad82955-bd52-4e34-aa55-b462771c2fb9
+
+	column CustomerKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: fe7b504c-dbd7-4042-b2be-5c8e343d8c9e
+		summarizeBy: none
+		sourceColumn: CustomerKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Customer
+		dataType: string
+		lineageTag: 7007d757-1910-4aa6-b41f-367df5299c5f
+		summarizeBy: none
+		sourceColumn: Customer
+
+		annotation SummarizationSetBy = Automatic
+
+	column City
+		dataType: string
+		lineageTag: 7327cb98-d12d-4041-9338-513c90c7a820
+		summarizeBy: none
+		sourceColumn: City
+
+		annotation SummarizationSetBy = Automatic
+
+	column State-Province
+		dataType: string
+		lineageTag: a157076a-4a4b-4297-a581-78bf89fb32dc
+		summarizeBy: none
+		sourceColumn: State-Province
+
+		annotation SummarizationSetBy = Automatic
+
+	column Country-Region
+		dataType: string
+		lineageTag: c6687356-f31f-4ac2-9f2a-a308e13299d1
+		summarizeBy: none
+		sourceColumn: Country-Region
+
+		annotation SummarizationSetBy = Automatic
+
+	column Customer_ID
+		dataType: string
+		lineageTag: 600e7974-dad2-48b5-a9de-8747fe664455
+		summarizeBy: none
+		sourceColumn: Customer_ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Postal_Code
+		dataType: string
+		lineageTag: df5d9f8f-8980-438d-9360-8b1bdd447d0c
+		summarizeBy: none
+		sourceColumn: Postal_Code
+
+		annotation SummarizationSetBy = Automatic
+
+	hierarchy Geography
+		lineageTag: e2eae803-1a4b-4f7e-b72b-95f398746ca5
+
+		level Country-Region
+			lineageTag: 6d694ad6-9ede-4765-aa14-e9a8479575b8
+			column: Country-Region
+
+		level State-Province
+			lineageTag: 436df14d-0f13-445c-bd62-8d7e0cc93e3a
+			column: State-Province
+
+		level City
+			lineageTag: a2160609-31dc-4fde-a4e4-8b6f0f82cda3
+			column: City
+
+		level Customer
+			lineageTag: 5a366b15-960f-4c41-a96f-a1ee007be572
+			column: Customer
+
+	partition Customer-5e0a19ff-5ad0-45e6-83f8-6e59f2bcd03f = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("<your-workspace-url>", "/sql/1.0/warehouses/<your-warehouse-id>", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation=null]),
+				    pbi_dashboards_Database = Source{[Name="pbi_dashboards",Kind="Database"]}[Data],
+				    dashboard_adventureworks_Schema = pbi_dashboards_Database{[Name="dashboard_adventureworks",Kind="Schema"]}[Data],
+				    customer_data_Table = dashboard_adventureworks_Schema{[Name="customer_data",Kind="Table"]}[Data],
+				    #"Changed Type" = Table.TransformColumnTypes(customer_data_Table,{{"CustomerKey", Int64.Type}, {"Customer_ID", type text}, {"Customer", type text}, {"City", type text}, {"State-Province", type text}, {"Country-Region", type text}, {"Postal_Code", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

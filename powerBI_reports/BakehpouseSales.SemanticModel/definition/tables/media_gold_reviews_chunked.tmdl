@@ -1,0 +1,65 @@
+table media_gold_reviews_chunked
+	lineageTag: dd29b74d-a6ff-4745-a2ae-bec72a645cb9
+
+	column franchiseID
+		dataType: int64
+		formatString: 0
+		lineageTag: d79864eb-2288-4c3c-aa5a-3c5dc5677128
+		summarizeBy: none
+		sourceColumn: franchiseID
+
+		annotation SummarizationSetBy = Automatic
+
+	column review_date
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 674acc86-c259-4940-a245-3ad553fa199b
+		summarizeBy: none
+		sourceColumn: review_date
+
+		variation Variation
+			isDefault
+			relationship: de9e98ef-a416-4800-93e0-c190c5e38c06
+			defaultHierarchy: LocalDateTable_e68603d7-582b-4e59-96e9-c05a9ecf3c76.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column chunked_text
+		dataType: string
+		lineageTag: f81ecf88-55f3-4c80-8e64-49991fe64cdd
+		summarizeBy: none
+		sourceColumn: chunked_text
+
+		annotation SummarizationSetBy = Automatic
+
+	column chunk_id
+		dataType: string
+		lineageTag: de17c10a-30d1-4195-9af8-c4fa758fd21c
+		summarizeBy: none
+		sourceColumn: chunk_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column review_uri
+		dataType: string
+		lineageTag: af5ec9cc-f2ae-4e3b-bfc8-d8b075f78235
+		summarizeBy: none
+		sourceColumn: review_uri
+
+		annotation SummarizationSetBy = Automatic
+
+	partition media_gold_reviews_chunked = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs(hostaname, httpPath, [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation=null]),
+				    samples_Database = Source{[Name="samples",Kind="Database"]}[Data],
+				    bakehouse_Schema = samples_Database{[Name="bakehouse",Kind="Schema"]}[Data],
+				    media_gold_reviews_chunked_Table = bakehouse_Schema{[Name="media_gold_reviews_chunked",Kind="Table"]}[Data]
+				in
+				    media_gold_reviews_chunked_Table
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

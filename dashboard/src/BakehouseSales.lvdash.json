@@ -1,0 +1,454 @@
+{
+  "datasets": [
+    {
+      "name": "d1a2b3c4",
+      "displayName": "sales-metrics",
+      "queryLines": [
+        "SELECT ",
+        "  OrderDate, ",
+        "  SUM(Totalprice) AS Revenue, ",
+        "  COUNT(DISTINCT Transactionid) AS Orders, ",
+        "  COUNT(DISTINCT Customerid) AS Customers, ",
+        "  SUM(Quantity) AS Units, ",
+        "  COUNT(DISTINCT Franchiseid) AS Franchises ",
+        " FROM <your-catalog>.dashboard_bakehousesales_views.vw_sales_transactions ",
+        " GROUP BY OrderDate ",
+        " ORDER BY OrderDate"
+      ]
+    },
+    {
+      "name": "d2b3c4d5",
+      "displayName": "kpi-totals",
+      "queryLines": [
+        "SELECT ",
+        "  SUM(Totalprice) AS Revenue, ",
+        "  COUNT(DISTINCT Transactionid) AS Orders, ",
+        "  COUNT(DISTINCT Customerid) AS Customers, ",
+        "  SUM(Quantity) AS Units, ",
+        "  COUNT(DISTINCT Franchiseid) AS Franchises ",
+        " FROM <your-catalog>.dashboard_bakehousesales_views.vw_sales_transactions"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "p1a2b3c4",
+      "displayName": "Sales Overview",
+      "layout": [
+        {
+          "widget": {
+            "name": "w1revenue",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "d2b3c4d5",
+                  "fields": [
+                    { "name": "Revenue", "expression": "`Revenue`" }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": { "fieldName": "Revenue", "displayName": "Revenue" }
+              },
+              "frame": { "showTitle": true, "title": "Revenue" }
+            }
+          },
+          "position": { "x": 0, "y": 0, "width": 2, "height": 2 }
+        },
+        {
+          "widget": {
+            "name": "w2custmrs",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "d2b3c4d5",
+                  "fields": [
+                    { "name": "Customers", "expression": "`Customers`" }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": { "fieldName": "Customers", "displayName": "Customers" }
+              },
+              "frame": { "showTitle": true, "title": "Customers" }
+            }
+          },
+          "position": { "x": 2, "y": 0, "width": 2, "height": 2 }
+        },
+        {
+          "widget": {
+            "name": "w3frnchs",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "d2b3c4d5",
+                  "fields": [
+                    { "name": "Franchises", "expression": "`Franchises`" }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": { "fieldName": "Franchises", "displayName": "Franchises" }
+              },
+              "frame": { "showTitle": true, "title": "Franchises" }
+            }
+          },
+          "position": { "x": 4, "y": 0, "width": 2, "height": 2 }
+        },
+        {
+          "widget": {
+            "name": "w4table1",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "d1a2b3c4",
+                  "fields": [
+                    { "name": "OrderDate", "expression": "`OrderDate`" },
+                    { "name": "Customers", "expression": "`Customers`" },
+                    { "name": "Orders", "expression": "`Orders`" },
+                    { "name": "Revenue", "expression": "`Revenue`" },
+                    { "name": "Units", "expression": "`Units`" },
+                    { "name": "Franchises", "expression": "`Franchises`" }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 1,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "OrderDate",
+                    "dateTimeFormat": "DD/MM/YYYY",
+                    "booleanValues": ["false", "true"],
+                    "imageUrlTemplate": "{{ @ }}",
+                    "imageTitleTemplate": "{{ @ }}",
+                    "imageWidth": "",
+                    "imageHeight": "",
+                    "linkUrlTemplate": "{{ @ }}",
+                    "linkTextTemplate": "{{ @ }}",
+                    "linkTitleTemplate": "{{ @ }}",
+                    "linkOpenInNewTab": true,
+                    "type": "date",
+                    "displayAs": "datetime",
+                    "visible": true,
+                    "order": 0,
+                    "title": "Order Date",
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "Customers",
+                    "numberFormat": "0",
+                    "booleanValues": ["false", "true"],
+                    "imageUrlTemplate": "{{ @ }}",
+                    "imageTitleTemplate": "{{ @ }}",
+                    "imageWidth": "",
+                    "imageHeight": "",
+                    "linkUrlTemplate": "{{ @ }}",
+                    "linkTextTemplate": "{{ @ }}",
+                    "linkTitleTemplate": "{{ @ }}",
+                    "linkOpenInNewTab": true,
+                    "type": "integer",
+                    "displayAs": "number",
+                    "visible": true,
+                    "order": 1,
+                    "title": "Customers",
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "Orders",
+                    "numberFormat": "0",
+                    "booleanValues": ["false", "true"],
+                    "imageUrlTemplate": "{{ @ }}",
+                    "imageTitleTemplate": "{{ @ }}",
+                    "imageWidth": "",
+                    "imageHeight": "",
+                    "linkUrlTemplate": "{{ @ }}",
+                    "linkTextTemplate": "{{ @ }}",
+                    "linkTitleTemplate": "{{ @ }}",
+                    "linkOpenInNewTab": true,
+                    "type": "integer",
+                    "displayAs": "number",
+                    "visible": true,
+                    "order": 2,
+                    "title": "Orders",
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "Revenue",
+                    "numberFormat": "#,##0",
+                    "booleanValues": ["false", "true"],
+                    "imageUrlTemplate": "{{ @ }}",
+                    "imageTitleTemplate": "{{ @ }}",
+                    "imageWidth": "",
+                    "imageHeight": "",
+                    "linkUrlTemplate": "{{ @ }}",
+                    "linkTextTemplate": "{{ @ }}",
+                    "linkTitleTemplate": "{{ @ }}",
+                    "linkOpenInNewTab": true,
+                    "type": "integer",
+                    "displayAs": "number",
+                    "visible": true,
+                    "order": 3,
+                    "title": "Revenue",
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "Units",
+                    "numberFormat": "#,##0.00",
+                    "booleanValues": ["false", "true"],
+                    "imageUrlTemplate": "{{ @ }}",
+                    "imageTitleTemplate": "{{ @ }}",
+                    "imageWidth": "",
+                    "imageHeight": "",
+                    "linkUrlTemplate": "{{ @ }}",
+                    "linkTextTemplate": "{{ @ }}",
+                    "linkTitleTemplate": "{{ @ }}",
+                    "linkOpenInNewTab": true,
+                    "type": "decimal",
+                    "displayAs": "number",
+                    "visible": true,
+                    "order": 4,
+                    "title": "Units",
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "Franchises",
+                    "numberFormat": "0",
+                    "booleanValues": ["false", "true"],
+                    "imageUrlTemplate": "{{ @ }}",
+                    "imageTitleTemplate": "{{ @ }}",
+                    "imageWidth": "",
+                    "imageHeight": "",
+                    "linkUrlTemplate": "{{ @ }}",
+                    "linkTextTemplate": "{{ @ }}",
+                    "linkTitleTemplate": "{{ @ }}",
+                    "linkOpenInNewTab": true,
+                    "type": "integer",
+                    "displayAs": "number",
+                    "visible": true,
+                    "order": 5,
+                    "title": "Franchises",
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  }
+                ]
+              },
+              "invisibleColumns": [],
+              "allowHTMLByDefault": false,
+              "itemsPerPage": 25,
+              "paginationSize": "default",
+              "condensed": true,
+              "withRowNumber": false,
+              "frame": { "showTitle": true, "title": "Sales by Date" }
+            }
+          },
+          "position": { "x": 0, "y": 2, "width": 3, "height": 6 }
+        },
+        {
+          "widget": {
+            "name": "w5custln",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "d1a2b3c4",
+                  "fields": [
+                    { "name": "OrderDate", "expression": "`OrderDate`" },
+                    { "name": "Customers", "expression": "`Customers`" }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "OrderDate",
+                  "displayName": "Order Date",
+                  "scale": { "type": "temporal" }
+                },
+                "y": {
+                  "fieldName": "Customers",
+                  "displayName": "Customers",
+                  "scale": { "type": "quantitative" }
+                }
+              },
+              "frame": { "showTitle": true, "title": "Customers by Date" },
+              "label": { "show": true },
+              "mark": {
+                "colors": [
+                  "#E74C3C",
+                  { "themeColorType": "visualizationColors", "position": 2 },
+                  { "themeColorType": "visualizationColors", "position": 3 },
+                  { "themeColorType": "visualizationColors", "position": 4 },
+                  { "themeColorType": "visualizationColors", "position": 5 },
+                  { "themeColorType": "visualizationColors", "position": 6 },
+                  { "themeColorType": "visualizationColors", "position": 7 },
+                  { "themeColorType": "visualizationColors", "position": 8 },
+                  { "themeColorType": "visualizationColors", "position": 9 },
+                  { "themeColorType": "visualizationColors", "position": 10 }
+                ]
+              }
+            }
+          },
+          "position": { "x": 3, "y": 2, "width": 3, "height": 6 }
+        },
+        {
+          "widget": {
+            "name": "w6ordlne",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "d1a2b3c4",
+                  "fields": [
+                    { "name": "OrderDate", "expression": "`OrderDate`" },
+                    { "name": "Orders", "expression": "`Orders`" }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "OrderDate",
+                  "displayName": "Order Date",
+                  "scale": { "type": "temporal" }
+                },
+                "y": {
+                  "fieldName": "Orders",
+                  "displayName": "Orders",
+                  "scale": { "type": "quantitative" }
+                }
+              },
+              "frame": { "showTitle": true, "title": "Orders by Date" },
+              "label": { "show": true },
+              "mark": {
+                "colors": [
+                  "#3599B8",
+                  { "themeColorType": "visualizationColors", "position": 2 },
+                  { "themeColorType": "visualizationColors", "position": 3 },
+                  { "themeColorType": "visualizationColors", "position": 4 },
+                  { "themeColorType": "visualizationColors", "position": 5 },
+                  { "themeColorType": "visualizationColors", "position": 6 },
+                  { "themeColorType": "visualizationColors", "position": 7 },
+                  { "themeColorType": "visualizationColors", "position": 8 },
+                  { "themeColorType": "visualizationColors", "position": 9 },
+                  { "themeColorType": "visualizationColors", "position": 10 }
+                ]
+              }
+            }
+          },
+          "position": { "x": 0, "y": 8, "width": 3, "height": 5 }
+        },
+        {
+          "widget": {
+            "name": "w7revlne",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "d1a2b3c4",
+                  "fields": [
+                    { "name": "OrderDate", "expression": "`OrderDate`" },
+                    { "name": "Revenue", "expression": "`Revenue`" }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "OrderDate",
+                  "displayName": "Order Date",
+                  "scale": { "type": "temporal" }
+                },
+                "y": {
+                  "fieldName": "Revenue",
+                  "displayName": "Revenue",
+                  "scale": { "type": "quantitative" }
+                }
+              },
+              "frame": { "showTitle": true, "title": "Revenue by Date" },
+              "label": { "show": true },
+              "mark": {
+                "colors": [
+                  "#2ECC71",
+                  { "themeColorType": "visualizationColors", "position": 2 },
+                  { "themeColorType": "visualizationColors", "position": 3 },
+                  { "themeColorType": "visualizationColors", "position": 4 },
+                  { "themeColorType": "visualizationColors", "position": 5 },
+                  { "themeColorType": "visualizationColors", "position": 6 },
+                  { "themeColorType": "visualizationColors", "position": 7 },
+                  { "themeColorType": "visualizationColors", "position": 8 },
+                  { "themeColorType": "visualizationColors", "position": 9 },
+                  { "themeColorType": "visualizationColors", "position": 10 }
+                ]
+              }
+            }
+          },
+          "position": { "x": 3, "y": 8, "width": 3, "height": 5 }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "BakehpouseSales"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "76e48aa3-3846-4cfa-b27b-b82a1a68587b"
+  }
+}

@@ -1,0 +1,106 @@
+table Reseller
+	lineageTag: 37fd4992-41f8-453a-b759-d8065ecbc037
+
+	column ResellerKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 5190da7f-6144-45f1-b66d-7c9500742a82
+		summarizeBy: none
+		sourceColumn: ResellerKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Reseller
+		dataType: string
+		lineageTag: 5f2b587b-4be8-4e4f-8379-8edee00974b1
+		summarizeBy: none
+		sourceColumn: Reseller
+
+		annotation SummarizationSetBy = Automatic
+
+	column City
+		dataType: string
+		lineageTag: bb1cc7a6-7739-4e1d-8329-6eca428af836
+		summarizeBy: none
+		sourceColumn: City
+
+		annotation SummarizationSetBy = Automatic
+
+	column State-Province
+		dataType: string
+		lineageTag: 972d98a2-b305-4597-be9e-c264578bdf60
+		summarizeBy: none
+		sourceColumn: State-Province
+
+		annotation SummarizationSetBy = Automatic
+
+	column Country-Region
+		dataType: string
+		lineageTag: 25238480-8230-46d2-84d6-f1a965279899
+		summarizeBy: none
+		sourceColumn: Country-Region
+
+		annotation SummarizationSetBy = Automatic
+
+	column Reseller_ID
+		dataType: string
+		lineageTag: 1d59807b-360d-4d0d-9c90-0cabe5384786
+		summarizeBy: none
+		sourceColumn: Reseller_ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Business_Type
+		dataType: string
+		lineageTag: bbab84c3-e0ae-41b3-9a00-8dac9c9cf17a
+		summarizeBy: none
+		sourceColumn: Business_Type
+
+		annotation SummarizationSetBy = Automatic
+
+	column Postal_Code
+		dataType: string
+		lineageTag: 512119b9-d403-4afb-aa44-69e2f41259b8
+		summarizeBy: none
+		sourceColumn: Postal_Code
+
+		annotation SummarizationSetBy = Automatic
+
+	hierarchy Geography
+		lineageTag: 81e7318d-2363-4e56-92b6-cd0c41be2453
+
+		level Country-Region
+			lineageTag: 0a19a1ea-1dc5-47df-ab3b-03a0f4bc934e
+			column: Country-Region
+
+		level State-Province
+			lineageTag: ea394ddd-44c3-4e8b-b330-d8a4c15c2548
+			column: State-Province
+
+		level City
+			lineageTag: c29dd445-c7a3-4317-8378-3e1c9971f5da
+			column: City
+
+		level Reseller
+			lineageTag: d12399b5-b4df-4d97-99b7-8f8498bb3818
+			column: Reseller
+
+	partition Reseller-7cb7a03e-1fc4-4995-ba1d-36ad734d60ab = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("<your-workspace-url>", "/sql/1.0/warehouses/<your-warehouse-id>", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation=null]),
+				    pbi_dashboards_Database = Source{[Name="pbi_dashboards",Kind="Database"]}[Data],
+				    dashboard_adventureworks_Schema = pbi_dashboards_Database{[Name="dashboard_adventureworks",Kind="Schema"]}[Data],
+				    Reseller_Table = dashboard_adventureworks_Schema{[Name="reseller_data",Kind="Table"]}[Data],
+				    #"Changed Type" = Table.TransformColumnTypes(Reseller_Table,{{"ResellerKey", Int64.Type}, {"Reseller_ID", type text}, {"Business_Type", type text}, {"Reseller", type text}, {"City", type text}, {"State-Province", type text}, {"Country-Region", type text}, {"Postal_Code", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

@@ -1,0 +1,58 @@
+table media_customer_reviews
+	lineageTag: a76949dc-a967-4b09-8a33-747276d6c8f8
+
+	column review
+		dataType: string
+		lineageTag: 4f6c6d54-ba52-49b6-bc39-e548795e8788
+		summarizeBy: none
+		sourceColumn: review
+
+		annotation SummarizationSetBy = Automatic
+
+	column franchiseID
+		dataType: int64
+		formatString: 0
+		lineageTag: bbf90515-f57c-42de-bb4d-aac645bc9d54
+		summarizeBy: none
+		sourceColumn: franchiseID
+
+		annotation SummarizationSetBy = Automatic
+
+	column review_date
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: c23a950f-9efe-4e56-b930-54be0e988189
+		summarizeBy: none
+		sourceColumn: review_date
+
+		variation Variation
+			isDefault
+			relationship: 27d48ade-446c-43a9-a0c5-5f8949c9b958
+			defaultHierarchy: LocalDateTable_169f25b1-a992-476e-9de2-8e72ab458a33.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column new_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 6e22f247-07ae-4a16-a0ff-a3026123defe
+		summarizeBy: sum
+		sourceColumn: new_id
+
+		annotation SummarizationSetBy = Automatic
+
+	partition media_customer_reviews = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs(hostaname, httpPath, [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation=null]),
+				    samples_Database = Source{[Name="samples",Kind="Database"]}[Data],
+				    bakehouse_Schema = samples_Database{[Name="bakehouse",Kind="Schema"]}[Data],
+				    media_customer_reviews_Table = bakehouse_Schema{[Name="media_customer_reviews",Kind="Table"]}[Data]
+				in
+				    media_customer_reviews_Table
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Exception
+

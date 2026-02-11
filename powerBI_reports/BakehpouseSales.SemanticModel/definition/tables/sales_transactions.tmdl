@@ -1,0 +1,200 @@
+table sales_transactions
+	lineageTag: 7aefc295-7722-48d3-b3e5-596364f906b2
+
+	column Transactionid
+		dataType: int64
+		formatString: 0
+		lineageTag: a7b0024b-292a-4b49-ae7c-cb286d01c647
+		summarizeBy: sum
+		sourceColumn: Transactionid
+
+		annotation SummarizationSetBy = Automatic
+
+	column Customerid
+		dataType: int64
+		formatString: 0
+		lineageTag: ae56b18c-f11e-4887-a60b-cc17c297f535
+		summarizeBy: none
+		sourceColumn: Customerid
+
+		annotation SummarizationSetBy = Automatic
+
+	column Franchiseid
+		dataType: int64
+		formatString: 0
+		lineageTag: 948c2472-fc54-4bf0-9fa5-c86bc3e40a3f
+		summarizeBy: none
+		sourceColumn: Franchiseid
+
+		annotation SummarizationSetBy = Automatic
+
+	column Datetime
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 81ff780a-b6b8-43a8-8ee0-f2eec65594de
+		summarizeBy: none
+		sourceColumn: Datetime
+
+		variation Variation
+			isDefault
+			relationship: ec434b89-765f-497d-8260-608fed16ab6a
+			defaultHierarchy: LocalDateTable_15f59164-8889-47c6-8dc6-a656611dc6d2.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Product
+		dataType: string
+		lineageTag: 97d60cb8-d099-47b1-9e18-2d2b175a555e
+		summarizeBy: none
+		sourceColumn: Product
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quantity
+		dataType: double
+		lineageTag: b4d37951-52de-491c-94c2-a13a75e7d189
+		summarizeBy: sum
+		sourceColumn: Quantity
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Unitprice
+		dataType: double
+		lineageTag: 5b254eca-1574-4e7f-a008-4c57a19121ea
+		summarizeBy: sum
+		sourceColumn: Unitprice
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Totalprice
+		dataType: int64
+		formatString: 0
+		lineageTag: 56936007-0291-4af7-a631-7b88a813296d
+		summarizeBy: sum
+		sourceColumn: Totalprice
+
+		annotation SummarizationSetBy = Automatic
+
+	column Paymentmethod
+		dataType: string
+		lineageTag: ddd62eea-6785-4d7f-ba6b-67dded3e5aad
+		summarizeBy: none
+		sourceColumn: Paymentmethod
+
+		annotation SummarizationSetBy = Automatic
+
+	column Cardnumber
+		dataType: double
+		lineageTag: 066a0d19-a57c-4f9b-8957-e43379ce4593
+		summarizeBy: sum
+		sourceColumn: Cardnumber
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column OrderDate
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 5a84b108-9962-4527-8251-afae2a7f2479
+		summarizeBy: none
+		sourceColumn: OrderDate
+
+		variation Variation
+			isDefault
+			relationship: 4f7e806e-75c8-4d6c-8c90-0d0555f4e05c
+			defaultHierarchy: LocalDateTable_83b7153b-01e5-4478-942d-274f9d812012.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: 984f98bf-5313-492c-a2cb-5287abe8da27
+		summarizeBy: sum
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month
+		dataType: int64
+		formatString: 0
+		lineageTag: d8b82eb7-28ae-4898-bbe5-7129979fe81d
+		summarizeBy: sum
+		sourceColumn: Month
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quarter
+		dataType: string
+		lineageTag: 66764bbe-d885-4f12-a7f6-e048cf94938a
+		summarizeBy: none
+		sourceColumn: Quarter
+
+		annotation SummarizationSetBy = Automatic
+
+	partition sales_transactions = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs(hostaname, httpPath, [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation=null]),
+				    SamplesDatabase = Source{[Name="samples",Kind="Database"]}[Data],
+				    BakehouseSchema = SamplesDatabase{[Name="bakehouse",Kind="Schema"]}[Data],
+				    SalesRaw = BakehouseSchema{[Name="sales_transactions", Kind="Table"]}[Data],
+				    //---------------------------------------------
+				    // 1. Rename columns (best practice for PBI)
+				    //---------------------------------------------
+				    RenamedCols = Table.TransformColumnNames(
+				        SalesRaw,
+				        each Text.Replace(Text.Proper(Text.Replace(_, "_", " ")), " ", "")
+				    ),
+				
+				    //---------------------------------------------
+				    // 2. Fix datatypes (important for folding)
+				    //---------------------------------------------
+				    Typed = Table.TransformColumnTypes(
+				        RenamedCols,
+				        {
+				            {"Transactionid", Int64.Type},
+				            {"Customerid", Int64.Type},
+				            {"Franchiseid", Int64.Type},
+				            {"Datetime", type datetime},
+				            {"Product", type text},
+				            {"Quantity", type number},
+				            {"Unitprice", type number},
+				            {"Paymentmethod", type text},
+				            {"Cardnumber", type number}
+				        }
+				    ),
+				
+				    //---------------------------------------------
+				    // 3. Trim/clean text columns
+				    //---------------------------------------------
+				    TextCleaned = Table.TransformColumns(
+				        Typed,
+				        {
+				            {"Product", Text.Trim, type text},
+				            {"Paymentmethod", Text.Trim, type text}
+				        }
+				    ),
+				
+				    //---------------------------------------------
+				    // 4. Add date components (still folds)
+				    //---------------------------------------------
+				    AddedDate = Table.AddColumn(TextCleaned, "OrderDate", each Date.From([Datetime]), type date),
+				    AddedYear = Table.AddColumn(AddedDate, "Year", each Date.Year([Datetime]), Int64.Type),
+				    AddedMonth = Table.AddColumn(AddedYear, "Month", each Date.Month([Datetime]), Int64.Type),
+				    AddedQuarter = Table.AddColumn(AddedMonth, "Quarter", each "Q" & Number.ToText(Date.QuarterOfYear([Datetime])), type text)
+				in
+				    AddedQuarter
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

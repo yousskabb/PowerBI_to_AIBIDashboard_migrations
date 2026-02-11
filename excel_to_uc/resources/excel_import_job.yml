@@ -1,0 +1,19 @@
+resources:
+  jobs:
+    excel_import:
+      name: "Import Excel to Unity Catalog"
+      tasks:
+        - task_key: import_excel_files
+          notebook_task:
+            notebook_path: ${workspace.root_path}/files/src/excel_to_uc
+            base_parameters:
+              catalog: "<your-catalog>"
+              datasets_path: ${workspace.root_path}/files/datasets
+          environment_key: default
+      environments:
+        - environment_key: default
+          spec:
+            client: "1"
+            dependencies:
+              - openpyxl
+              - xlrd

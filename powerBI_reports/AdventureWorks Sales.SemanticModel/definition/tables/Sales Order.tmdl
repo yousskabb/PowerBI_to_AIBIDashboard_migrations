@@ -1,0 +1,55 @@
+table 'Sales Order'
+	lineageTag: ee855eee-1d63-4301-8a57-06ecd1b06287
+
+	column Channel
+		dataType: string
+		lineageTag: 3c6db5db-af11-4d71-8a94-ca796da5686b
+		summarizeBy: none
+		sourceColumn: Channel
+
+		annotation SummarizationSetBy = Automatic
+
+	column SalesOrderLineKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 9195ac5f-c22a-422f-ab8e-6eb53adefaf9
+		summarizeBy: none
+		sourceColumn: SalesOrderLineKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Sales_Order
+		dataType: string
+		lineageTag: 3aee37dc-e606-46f0-82e9-3e345ba98612
+		summarizeBy: none
+		sourceColumn: Sales_Order
+
+		annotation SummarizationSetBy = Automatic
+
+	column Sales_Order_Line
+		dataType: string
+		lineageTag: c64111a9-cbde-4f0b-b590-6f64dcc8015a
+		summarizeBy: none
+		sourceColumn: Sales_Order_Line
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Sales Order-29c8461f-8ea7-4acf-8676-6ade54d1e2a0' = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("<your-workspace-url>", "/sql/1.0/warehouses/<your-warehouse-id>", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation=null]),
+				    pbi_dashboards_Database = Source{[Name="pbi_dashboards",Kind="Database"]}[Data],
+				    dashboard_adventureworks_Schema = pbi_dashboards_Database{[Name="dashboard_adventureworks",Kind="Schema"]}[Data],
+				    SalesOrder_Table = dashboard_adventureworks_Schema{[Name="sales_order_data",Kind="Table"]}[Data],
+				    #"Changed Type" = Table.TransformColumnTypes(SalesOrder_Table,{{"Channel", type text}, {"SalesOrderLineKey", Int64.Type}, {"Sales_Order", type text}, {"Sales_Order_Line", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

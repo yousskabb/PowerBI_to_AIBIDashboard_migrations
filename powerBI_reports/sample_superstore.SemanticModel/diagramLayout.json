@@ -1,0 +1,31 @@
+{
+  "version": "1.0.0",
+  "diagrams": [
+    {
+      "isDefault": true,
+      "layout": {
+        "boundingBoxHeight": 300,
+        "boundingBoxWidth": 180,
+        "boundingBoxPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "nodes": [
+          {
+            "layedOut": true,
+            "nodeIndex": "Orders",
+            "height": 300,
+            "width": 180,
+            "left": 0,
+            "top": 0
+          }
+        ]
+      },
+      "name": "All tables",
+      "tables": [
+        "Orders"
+      ],
+      "zoomValue": 100
+    }
+  ]
+}

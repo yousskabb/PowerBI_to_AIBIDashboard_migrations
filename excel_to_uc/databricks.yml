@@ -1,0 +1,25 @@
+bundle:
+  name: excel_to_uc
+
+workspace:
+  host: https://<your-databricks-workspace-url>
+
+include:
+  - resources/*.yml
+
+sync:
+  include:
+    - src/*.py
+    - datasets/**
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/dev
+
+  prod:
+    mode: production
+    workspace:
+      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/prod

@@ -1,0 +1,36 @@
+relationship 27d48ade-446c-43a9-a0c5-5f8949c9b958
+	joinOnDateBehavior: datePartOnly
+	fromColumn: media_customer_reviews.review_date
+	toColumn: LocalDateTable_169f25b1-a992-476e-9de2-8e72ab458a33.Date
+
+relationship de9e98ef-a416-4800-93e0-c190c5e38c06
+	joinOnDateBehavior: datePartOnly
+	fromColumn: media_gold_reviews_chunked.review_date
+	toColumn: LocalDateTable_e68603d7-582b-4e59-96e9-c05a9ecf3c76.Date
+
+relationship AutoDetected_83b0105e-86a3-4ed5-9d30-e183d65747ed
+	fromColumn: media_customer_reviews.franchiseID
+	toColumn: sales_franchises.franchiseID
+
+relationship AutoDetected_29007730-401f-4aea-a707-feb1fa2f7fd2
+	fromColumn: media_gold_reviews_chunked.franchiseID
+	toColumn: sales_franchises.franchiseID
+
+relationship ec434b89-765f-497d-8260-608fed16ab6a
+	joinOnDateBehavior: datePartOnly
+	fromColumn: sales_transactions.Datetime
+	toColumn: LocalDateTable_15f59164-8889-47c6-8dc6-a656611dc6d2.Date
+
+relationship 4f7e806e-75c8-4d6c-8c90-0d0555f4e05c
+	joinOnDateBehavior: datePartOnly
+	fromColumn: sales_transactions.OrderDate
+	toColumn: LocalDateTable_83b7153b-01e5-4478-942d-274f9d812012.Date
+
+relationship AutoDetected_0ea86ca1-5929-4f8c-98bc-98ce7664b196
+	fromColumn: sales_transactions.Franchiseid
+	toColumn: sales_franchises.franchiseID
+
+relationship AutoDetected_db85e69c-1a3c-4cfa-9ca4-ee88235f3c91
+	fromColumn: sales_transactions.Customerid
+	toColumn: sales_customers.customerID
+

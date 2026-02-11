@@ -1,0 +1,422 @@
+{
+  "datasets": [
+    {
+      "name": "ds01area",
+      "displayName": "area-chart-measures",
+      "queryLines": [
+        "SELECT ",
+        "  DATE_FORMAT(TO_DATE(d.Month, 'yyyy MMM'), 'yyyy-MM') AS Month, ",
+        "  d.MonthKey, ",
+        "  d.Fiscal_Year, ",
+        "  r.`Country-Region` AS Country_Region, ",
+        "  p.Category, ",
+        "  'Sales_Amount' AS Measure_Name, ",
+        "  SUM(s.Sales_Amount) AS Sales_Amount ",
+        "FROM <your-catalog>.dashboard_adventureworks.sales_data s ",
+        "JOIN <your-catalog>.dashboard_adventureworks.date_data d ON s.OrderDateKey = d.DateKey ",
+        "JOIN <your-catalog>.dashboard_adventureworks.reseller_data r ON s.ResellerKey = r.ResellerKey ",
+        "JOIN <your-catalog>.dashboard_adventureworks.product_data p ON s.ProductKey = p.ProductKey ",
+        "GROUP BY DATE_FORMAT(TO_DATE(d.Month, 'yyyy MMM'), 'yyyy-MM'), d.MonthKey, d.Fiscal_Year, r.`Country-Region`, p.Category ",
+        "UNION ALL ",
+        "SELECT ",
+        "  DATE_FORMAT(TO_DATE(d.Month, 'yyyy MMM'), 'yyyy-MM') AS Month, ",
+        "  d.MonthKey, ",
+        "  d.Fiscal_Year, ",
+        "  r.`Country-Region` AS Country_Region, ",
+        "  p.Category, ",
+        "  'Sales Amount by Due Date' AS Measure_Name, ",
+        "  SUM(s.Sales_Amount) AS Sales_Amount ",
+        "FROM <your-catalog>.dashboard_adventureworks.sales_data s ",
+        "JOIN <your-catalog>.dashboard_adventureworks.date_data d ON s.DueDateKey = d.DateKey ",
+        "JOIN <your-catalog>.dashboard_adventureworks.reseller_data r ON s.ResellerKey = r.ResellerKey ",
+        "JOIN <your-catalog>.dashboard_adventureworks.product_data p ON s.ProductKey = p.ProductKey ",
+        "GROUP BY DATE_FORMAT(TO_DATE(d.Month, 'yyyy MMM'), 'yyyy-MM'), d.MonthKey, d.Fiscal_Year, r.`Country-Region`, p.Category ",
+        "ORDER BY MonthKey, Measure_Name"
+      ]
+    },
+    {
+      "name": "ds02main",
+      "displayName": "sales-data",
+      "queryLines": [
+        "SELECT ",
+        "  DATE_FORMAT(TO_DATE(d.Month, 'yyyy MMM'), 'yyyy-MM') AS Month, ",
+        "  d.MonthKey, d.Fiscal_Year, ",
+        "  r.`Country-Region` AS Country_Region, ",
+        "  p.Category, r.Business_Type, ",
+        "  SUM(s.Sales_Amount) AS Sales_Amount, ",
+        "  SUM(s.Order_Quantity) AS Order_Quantity ",
+        "FROM <your-catalog>.dashboard_adventureworks.sales_data s ",
+        "JOIN <your-catalog>.dashboard_adventureworks.date_data d ON s.OrderDateKey = d.DateKey ",
+        "JOIN <your-catalog>.dashboard_adventureworks.reseller_data r ON s.ResellerKey = r.ResellerKey ",
+        "JOIN <your-catalog>.dashboard_adventureworks.product_data p ON s.ProductKey = p.ProductKey ",
+        "GROUP BY DATE_FORMAT(TO_DATE(d.Month, 'yyyy MMM'), 'yyyy-MM'), d.MonthKey, d.Fiscal_Year, r.`Country-Region`, p.Category, r.Business_Type ",
+        "ORDER BY MonthKey"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "pg01awrk",
+      "displayName": "Executive Summary",
+      "layout": [
+        {
+          "widget": {
+            "name": "w1title1",
+            "textbox_spec": "# Executive Summary - Sales Report"
+          },
+          "position": { "x": 0, "y": 0, "width": 6, "height": 1 }
+        },
+        {
+          "widget": {
+            "name": "w2filter",
+            "queries": [
+              {
+                "name": "fiscal_year_ds02main",
+                "query": {
+                  "datasetName": "ds02main",
+                  "fields": [
+                    { "name": "Fiscal_Year", "expression": "`Fiscal_Year`" }
+                  ],
+                  "disaggregated": false
+                }
+              },
+              {
+                "name": "fiscal_year_ds01area",
+                "query": {
+                  "datasetName": "ds01area",
+                  "fields": [
+                    { "name": "Fiscal_Year", "expression": "`Fiscal_Year`" }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "Fiscal_Year",
+                    "displayName": "Fiscal Year",
+                    "queryName": "fiscal_year_ds02main"
+                  },
+                  {
+                    "fieldName": "Fiscal_Year",
+                    "displayName": "Fiscal Year",
+                    "queryName": "fiscal_year_ds01area"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Fiscal Year"
+              }
+            }
+          },
+          "position": { "x": 0, "y": 1, "width": 1, "height": 1 }
+        },
+        {
+          "widget": {
+            "name": "w2fltcat",
+            "queries": [
+              {
+                "name": "category_ds02main",
+                "query": {
+                  "datasetName": "ds02main",
+                  "fields": [
+                    { "name": "Category", "expression": "`Category`" }
+                  ],
+                  "disaggregated": false
+                }
+              },
+              {
+                "name": "category_ds01area",
+                "query": {
+                  "datasetName": "ds01area",
+                  "fields": [
+                    { "name": "Category", "expression": "`Category`" }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "Category",
+                    "displayName": "Category",
+                    "queryName": "category_ds02main"
+                  },
+                  {
+                    "fieldName": "Category",
+                    "displayName": "Category",
+                    "queryName": "category_ds01area"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Category"
+              }
+            }
+          },
+          "position": { "x": 0, "y": 2, "width": 1, "height": 1 }
+        },
+        {
+          "widget": {
+            "name": "w2fltctr",
+            "queries": [
+              {
+                "name": "country_ds02main",
+                "query": {
+                  "datasetName": "ds02main",
+                  "fields": [
+                    { "name": "Country_Region", "expression": "`Country_Region`" }
+                  ],
+                  "disaggregated": false
+                }
+              },
+              {
+                "name": "country_ds01area",
+                "query": {
+                  "datasetName": "ds01area",
+                  "fields": [
+                    { "name": "Country_Region", "expression": "`Country_Region`" }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "Country_Region",
+                    "displayName": "Country",
+                    "queryName": "country_ds02main"
+                  },
+                  {
+                    "fieldName": "Country_Region",
+                    "displayName": "Country",
+                    "queryName": "country_ds01area"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Country"
+              }
+            }
+          },
+          "position": { "x": 0, "y": 3, "width": 1, "height": 1 }
+        },
+        {
+          "widget": {
+            "name": "w3areacr",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds01area",
+                  "fields": [
+                    { "name": "Month", "expression": "`Month`" },
+                    { "name": "Measure_Name", "expression": "`Measure_Name`" },
+                    { "name": "Sales_Amount", "expression": "SUM(`Sales_Amount`)" }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "Month",
+                  "displayName": "Month",
+                  "scale": { "type": "categorical" }
+                },
+                "y": {
+                  "fieldName": "Sales_Amount",
+                  "displayName": "Sales Amount",
+                  "scale": { "type": "quantitative" }
+                },
+                "color": {
+                  "fieldName": "Measure_Name",
+                  "displayName": "Measure",
+                  "scale": { "type": "categorical" }
+                }
+              },
+              "frame": { "showTitle": true, "title": "Sales Amount by Order Date / Due Date" },
+              "mark": {
+                "colors": [
+                  "#3257A8",
+                  "#DD6B7F",
+                  { "themeColorType": "visualizationColors", "position": 3 },
+                  { "themeColorType": "visualizationColors", "position": 4 },
+                  { "themeColorType": "visualizationColors", "position": 5 },
+                  { "themeColorType": "visualizationColors", "position": 6 },
+                  { "themeColorType": "visualizationColors", "position": 7 },
+                  { "themeColorType": "visualizationColors", "position": 8 },
+                  { "themeColorType": "visualizationColors", "position": 9 },
+                  { "themeColorType": "visualizationColors", "position": 10 }
+                ]
+              }
+            }
+          },
+          "position": { "x": 1, "y": 1, "width": 3, "height": 4 }
+        },
+        {
+          "widget": {
+            "name": "w4mapcrt",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds02main",
+                  "fields": [
+                    { "name": "Country_Region", "expression": "`Country_Region`" },
+                    { "name": "Order_Quantity", "expression": "SUM(`Order_Quantity`)" }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 1,
+              "widgetType": "choropleth-map",
+              "encodings": {
+                "region": {
+                  "regionType": "mapbox-v4-admin",
+                  "admin0": {
+                    "fieldName": "Country_Region",
+                    "type": "field",
+                    "geographicRole": "admin0-name"
+                  }
+                },
+                "color": {
+                  "fieldName": "Order_Quantity",
+                  "displayName": "Order Quantity",
+                  "scale": { "type": "quantitative" }
+                }
+              },
+              "frame": { "showTitle": true, "title": "Order Quantity by Reseller Country" }
+            }
+          },
+          "position": { "x": 4, "y": 1, "width": 2, "height": 4 }
+        },
+        {
+          "widget": {
+            "name": "w5tblcat",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds02main",
+                  "fields": [
+                    { "name": "Category", "expression": "`Category`" },
+                    { "name": "Business_Type", "expression": "`Business_Type`" },
+                    { "name": "Sales_Amount", "expression": "SUM(`Sales_Amount`)" }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 1,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "Category",
+                    "booleanValues": ["false", "true"],
+                    "imageUrlTemplate": "{{ @ }}",
+                    "imageTitleTemplate": "{{ @ }}",
+                    "imageWidth": "",
+                    "imageHeight": "",
+                    "linkUrlTemplate": "{{ @ }}",
+                    "linkTextTemplate": "{{ @ }}",
+                    "linkTitleTemplate": "{{ @ }}",
+                    "linkOpenInNewTab": true,
+                    "type": "string",
+                    "displayAs": "string",
+                    "visible": true,
+                    "order": 0,
+                    "title": "Category",
+                    "allowSearch": true,
+                    "alignContent": "left",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "Business_Type",
+                    "booleanValues": ["false", "true"],
+                    "imageUrlTemplate": "{{ @ }}",
+                    "imageTitleTemplate": "{{ @ }}",
+                    "imageWidth": "",
+                    "imageHeight": "",
+                    "linkUrlTemplate": "{{ @ }}",
+                    "linkTextTemplate": "{{ @ }}",
+                    "linkTitleTemplate": "{{ @ }}",
+                    "linkOpenInNewTab": true,
+                    "type": "string",
+                    "displayAs": "string",
+                    "visible": true,
+                    "order": 1,
+                    "title": "Business Type",
+                    "allowSearch": true,
+                    "alignContent": "left",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "Sales_Amount",
+                    "numberFormat": "#,##0.00",
+                    "booleanValues": ["false", "true"],
+                    "imageUrlTemplate": "{{ @ }}",
+                    "imageTitleTemplate": "{{ @ }}",
+                    "imageWidth": "",
+                    "imageHeight": "",
+                    "linkUrlTemplate": "{{ @ }}",
+                    "linkTextTemplate": "{{ @ }}",
+                    "linkTitleTemplate": "{{ @ }}",
+                    "linkOpenInNewTab": true,
+                    "type": "decimal",
+                    "displayAs": "number",
+                    "visible": true,
+                    "order": 2,
+                    "title": "Sales Amount",
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  }
+                ]
+              },
+              "invisibleColumns": [],
+              "allowHTMLByDefault": false,
+              "itemsPerPage": 25,
+              "paginationSize": "default",
+              "condensed": true,
+              "withRowNumber": false,
+              "frame": { "showTitle": true, "title": "Sales Amount by Category and Reseller Business Type" }
+            }
+          },
+          "position": { "x": 0, "y": 5, "width": 6, "height": 5 }
+        }
+      ]
+    }
+  ]
+}

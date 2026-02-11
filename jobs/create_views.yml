@@ -1,0 +1,26 @@
+resources:
+  jobs:
+    create_views:
+      name: "Create Dashboard Views"
+      tasks:
+        - task_key: create_schema
+          sql_task:
+            warehouse_id: ${resources.sql_warehouses.dashboard_warehouse.id}
+            file:
+              path: ${workspace.root_path}/files/src/views/create_schema.sql
+
+        - task_key: create_vw_sales_transactions
+          sql_task:
+            warehouse_id: ${resources.sql_warehouses.dashboard_warehouse.id}
+            file:
+              path: ${workspace.root_path}/files/src/views/vw_sales_transactions.sql
+          depends_on:
+            - task_key: create_schema
+
+        - task_key: create_vw_dim_date
+          sql_task:
+            warehouse_id: ${resources.sql_warehouses.dashboard_warehouse.id}
+            file:
+              path: ${workspace.root_path}/files/src/views/vw_dim_date.sql
+          depends_on:
+            - task_key: create_vw_sales_transactions

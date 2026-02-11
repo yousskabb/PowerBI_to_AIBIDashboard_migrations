@@ -1,0 +1,41 @@
+table sales_suppliers
+	lineageTag: 9d34befd-260f-4e8f-86c5-f39c50a8f64a
+
+	column Name
+		dataType: string
+		lineageTag: 7a6d97c4-502c-40e5-86da-f2cbe7341e30
+		summarizeBy: none
+		sourceColumn: Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column Description
+		dataType: string
+		lineageTag: 9918240d-fc62-4a48-bf68-cc477020d7a2
+		summarizeBy: none
+		sourceColumn: Description
+
+		annotation SummarizationSetBy = Automatic
+
+	column Kind
+		dataType: string
+		lineageTag: 23259223-f83e-4df2-9559-871a5663883e
+		summarizeBy: none
+		sourceColumn: Kind
+
+		annotation SummarizationSetBy = Automatic
+
+	partition sales_suppliers = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs(hostaname, httpPath, [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation=null]),
+				    samples_Database = Source{[Name="samples",Kind="Database"]}[Data],
+				    bakehouse_Schema = samples_Database{[Name="bakehouse",Kind="Schema"]}[Data]
+				in
+				    bakehouse_Schema
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

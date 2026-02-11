@@ -1,0 +1,36 @@
+# Copy this file to terraform.tfvars and fill in your values
+
+# ============================================
+# OPTION 1: Create new Key Vault (Recommended - DEFAULT)
+# ============================================
+# A new Key Vault will be created with a randomly generated password.
+# After deployment, retrieve the password with:
+#   terraform output password_retrieval_command
+create_key_vault = true
+
+# ============================================
+# OPTION 3: Password directly (least secure)
+# ============================================
+# create_key_vault = false
+# admin_password   = "YourStr0ngP@ssword123!"
+
+# Recommended: Restrict RDP to your IP address only
+# Find your IP at https://whatismyipaddress.com/
+allowed_rdp_ips = "x.x.x.x"  # Replace with your public IP
+
+# Optional: Customize these values
+resource_group_name = "rg-powerbi-dev"
+location            = "westeurope"  # Change to your nearest region
+vm_name             = "vm-powerbi"
+vm_size             = "Standard_D2s_v3"  # 2 vCPU, 8GB RAM
+admin_username      = "powerbi-admin"
+
+# Cost optimization
+use_spot_vm        = true   # Set to false if you need guaranteed availability
+auto_shutdown_time = "1900" # 7 PM UTC - auto shutdown daily
+
+tags = {
+  Environment = "dev"
+  Purpose     = "powerbi-development"
+  ManagedBy   = "terraform"
+}

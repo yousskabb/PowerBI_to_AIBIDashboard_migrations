@@ -1,0 +1,190 @@
+table Sales
+	lineageTag: 4f6804ef-cf70-4c42-96c1-d1155891935b
+
+	measure 'Sales Amount by Due Date' = ```
+			CALCULATE(SUM(Sales[Sales_Amount]), USERELATIONSHIP(Sales[DueDateKey],'Date'[DateKey])) 
+			```
+		lineageTag: c2fe3283-9d89-4bee-b219-09de50cc38c5
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column SalesOrderLineKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 8736298f-ee01-472f-b2bd-0741a6fa8425
+		summarizeBy: none
+		sourceColumn: SalesOrderLineKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ResellerKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: bdfe23a5-0c8e-4c2d-b9b7-7abc64bc86fa
+		summarizeBy: none
+		sourceColumn: ResellerKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 6bdb2403-cb9d-477b-8f6a-8a9043ae942a
+		summarizeBy: none
+		sourceColumn: CustomerKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 07f0420f-2e93-42b4-9536-57197a666357
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column OrderDateKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: d2133126-ba41-45e1-963f-d78a5d4d6517
+		summarizeBy: none
+		sourceColumn: OrderDateKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column DueDateKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 41d491d2-f303-44e0-8b0d-9ef3c309b588
+		summarizeBy: count
+		sourceColumn: DueDateKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ShipDateKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 65239c70-f0a2-44d6-86bb-0504b4067881
+		summarizeBy: count
+		sourceColumn: ShipDateKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column SalesTerritoryKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: d534b7e0-9098-48db-b545-1c6dfdd99dbf
+		summarizeBy: none
+		sourceColumn: SalesTerritoryKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Order_Quantity
+		dataType: int64
+		formatString: 0
+		lineageTag: 591558ad-24fe-40d6-a49a-e2e7e8b5abd5
+		summarizeBy: sum
+		sourceColumn: Order_Quantity
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unit_Price
+		dataType: double
+		lineageTag: 19ff374c-d9e2-4562-85bd-acbe2b57fcbf
+		summarizeBy: sum
+		sourceColumn: Unit_Price
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Extended_Amount
+		dataType: double
+		lineageTag: 8b48454e-bcae-460c-8fe4-e93191f23c73
+		summarizeBy: sum
+		sourceColumn: Extended_Amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Unit_Price_Discount_Pct
+		dataType: int64
+		formatString: 0
+		lineageTag: 4a380039-c3b9-4fcb-9dd5-a7e5274d0488
+		summarizeBy: sum
+		sourceColumn: Unit_Price_Discount_Pct
+
+		annotation SummarizationSetBy = Automatic
+
+	column Product_Standard_Cost
+		dataType: double
+		lineageTag: 5dfc04c4-82a4-47ac-91a6-654d5128497b
+		summarizeBy: sum
+		sourceColumn: Product_Standard_Cost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Total_Product_Cost
+		dataType: double
+		lineageTag: 1a644f2e-8be6-4ec8-9643-057c8ba6b8e4
+		summarizeBy: sum
+		sourceColumn: Total_Product_Cost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Sales_Amount
+		dataType: double
+		lineageTag: bfaeda5b-651a-4ced-90e8-ccedd3c9ea67
+		summarizeBy: sum
+		sourceColumn: Sales_Amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition Sales-12135db7-a44d-4ce1-8b1f-bf4fa607dc66 = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("<your-workspace-url>", "/sql/1.0/warehouses/<your-warehouse-id>", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation=null]),
+				    pbi_dashboards_Database = Source{[Name="pbi_dashboards",Kind="Database"]}[Data],
+				    dashboard_adventureworks_Schema = pbi_dashboards_Database{[Name="dashboard_adventureworks",Kind="Schema"]}[Data],
+				    Sales_Table = dashboard_adventureworks_Schema{[Name="sales_data",Kind="Table"]}[Data],
+				    #"Changed Type" = Table.TransformColumnTypes(Sales_Table,{{"SalesOrderLineKey", Int64.Type}, {"ResellerKey", Int64.Type}, {"CustomerKey", Int64.Type}, {"ProductKey", Int64.Type}, {"OrderDateKey", Int64.Type}, {"DueDateKey", Int64.Type}, {"ShipDateKey", Int64.Type}, {"SalesTerritoryKey", Int64.Type}, {"Order_Quantity", Int64.Type}, {"Unit_Price", type number}, {"Extended_Amount", type number}, {"Unit_Price_Discount_Pct", Int64.Type}, {"Product_Standard_Cost", type number}, {"Total_Product_Cost", type number}, {"Sales_Amount", type number}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
